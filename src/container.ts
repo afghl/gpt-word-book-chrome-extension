@@ -9,6 +9,7 @@ function attachEventsToContainer($container: HTMLElement) {
     })
 }
 
+
 export async function getContainer(): Promise<HTMLElement> {
     let $container: HTMLElement | null = document.getElementById(containerID)
     if (!$container) {
