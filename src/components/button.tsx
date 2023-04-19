@@ -1,5 +1,5 @@
 import React from "react"
-import { componentID } from "../const"
+import { componentID } from "../consts"
 
 interface ButtonProps {
     state: string

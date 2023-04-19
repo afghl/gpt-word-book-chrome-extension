@@ -1,5 +1,5 @@
 import React from "react";
-import { containerRootID, zIndex } from "./const";
+import { containerRootID, zIndex } from "./consts";
 import { getContainer } from "./container"
 import { createRoot, Root } from 'react-dom/client';
 import { App } from "./components/app";
@@ -29,7 +29,6 @@ const initRoot = async () => {
     )
   }
 }
-
 
 async function main() {
   window.setTimeout(initRoot, 100)

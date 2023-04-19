@@ -1,4 +1,4 @@
-import { containerID, zIndex } from "./const"
+import { containerID, zIndex } from "./consts"
 
 function attachEventsToContainer($container: HTMLElement) {
     $container.addEventListener('mousedown', (event) => {

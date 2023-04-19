@@ -27,6 +27,13 @@ export const App = () => {
         updatePosition(event)
     }
 
+    const clearStates = () => {
+        console.log("set state to EMPTY")
+        setAppState("EMPTY")
+        setSelectedText("")
+        setLastEventPosition({ x: 0, y: 0 })
+    }
+
     React.useEffect(() => {
         document.addEventListener('mouseup', async (event: MouseEvent) => {
             window.setTimeout(async () => {
@@ -37,9 +44,9 @@ export const App = () => {
             })
         })
 
-        document.addEventListener('mousedown', (event: MouseEvent) => {
-            setAppState("EMPTY")
-        })
+        // 这里我有两个做法：1. 每次点击都clearState，管理一个更复杂的生命周期
+        // 2. 每次点击，将整个App unmount，每次点击都创建一次app
+        document.addEventListener('mousedown', clearStates)
     }, [])
 
     return (
