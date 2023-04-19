@@ -10,10 +10,19 @@ interface CardProps {
 export const Card = ({ state, selectedText, position }: CardProps) => {
     // TODO: 还要补充card本身的一个状态，是否正在获取后端响应
     const [translation, setTranslation] = React.useState("")
+    let reader: ReadableStreamDefaultReader<Uint8Array> | null
+
     React.useEffect(() => {
         console.log('use effect fetching translation');
         fetchResponse()
-
+        // cancel reader
+        return () => {
+            console.log('use effect undo');
+            if (reader != null) {
+                reader.cancel()
+                reader.releaseLock()
+            }
+        }
     }, [state])
 
     const fetchResponse = async () => {
@@ -32,8 +41,7 @@ export const Card = ({ state, selectedText, position }: CardProps) => {
         if (!resp.body) {
             return
         }
-        const reader = resp.body.getReader();
-
+        reader = resp.body.getReader();
         try {
             while (true) {
                 const { done, value } = await reader.read();
