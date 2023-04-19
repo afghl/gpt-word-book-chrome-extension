@@ -24,14 +24,13 @@ const renderApp = async (event: MouseEvent, text: string) => {
     root = createRoot($root)
     root.render(
       <>
-        <App selectedText={text} initPosition={{ x: event.clientX, y: event.clientY }} />
+        <App selectedText={text} initPosition={{ x: event.clientX, y: event.clientY }} clearApp={clearApp} />
       </>
     )
   }
 }
 
-const clearApp = (event: MouseEvent) => {
-
+const clearApp = () => {
   if (root) {
     root.unmount()
     root = null

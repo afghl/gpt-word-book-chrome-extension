@@ -5,9 +5,10 @@ interface CardProps {
     state: string
     selectedText: string
     position: { x: number, y: number }
+    clearApp: () => void
 }
 
-export const Card = ({ state, selectedText, position }: CardProps) => {
+export const Card = ({ state, selectedText, position, clearApp }: CardProps) => {
     // TODO: 还要补充card本身的一个状态，是否正在获取后端响应
     const [translation, setTranslation] = React.useState("")
     let reader: ReadableStreamDefaultReader<Uint8Array> | null
@@ -82,6 +83,9 @@ export const Card = ({ state, selectedText, position }: CardProps) => {
                 className="card-view"
                 onClick={preventDefault}
             >
+                <div onClick={clearApp}>
+                    X
+                </div>
                 <div>{selectedText}</div>
                 {/* divider */}
                 <div

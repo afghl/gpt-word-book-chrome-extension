@@ -5,9 +5,10 @@ import { Card } from "./card"
 interface AppProps {
     selectedText: string
     initPosition: { x: number, y: number }
+    clearApp: () => void
 }
 
-export const App = ({ selectedText, initPosition }: AppProps) => {
+export const App = ({ selectedText, initPosition, clearApp }: AppProps) => {
     const [appState, setAppState] = React.useState("SHOWBUTTON")
     const [lastEventPosition, setLastEventPosition] = React.useState(initPosition)
 
@@ -25,7 +26,7 @@ export const App = ({ selectedText, initPosition }: AppProps) => {
     return (
         <>
             <Button handleButtonClick={handleButtonClick} state={appState} position={lastEventPosition} />
-            <Card state={appState} selectedText={selectedText} position={lastEventPosition} />
+            <Card state={appState} selectedText={selectedText} position={lastEventPosition} clearApp={clearApp} />
         </>
     )
 }
