@@ -3,7 +3,7 @@
 
   "name": "ChatGPT Word Book",
   "description": "ChatGPT Word Book",
-  "version": "0.1",
+  "version": "1.03",
 
   "options_ui": {
     "page": "options.html"
