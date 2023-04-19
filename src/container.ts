@@ -45,3 +45,8 @@ export async function getContainer(): Promise<HTMLElement> {
         resolve($container as HTMLElement)
     })
 }
+
+export async function removeContainer() {
+    const $container = await getContainer()
+    $container.remove()
+}
