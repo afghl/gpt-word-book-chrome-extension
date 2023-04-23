@@ -33,12 +33,19 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
         setTranslation("")
         console.log('fetch response came in, calling api to get rsp ');
 
-        let resp = await fetch('http://localhost:8080/api/test')
-            .then(resp => resp)
-            .catch(err => {
-                console.log('fetch erorr: ', err);
-                return null;
-            });
+        // 使用Post 请求后端
+        let resp = await fetch('http://localhost:8080/api/v1/llm/translate', {
+            method: 'POST',
+            body: JSON.stringify({
+                text: selectedText,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(resp => resp).catch(err => {
+            console.log('fetch erorr: ', err);
+            return null;
+        });
         console.log("after fetch", resp)
         // 处理fetch出错的情况
         if (resp == null) {
