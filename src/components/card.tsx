@@ -15,7 +15,7 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
 
     React.useEffect(() => {
         console.log('use effect fetching translation');
-        fetchResponse()
+        fetchResponse().catch(err => console.log('fetch error: ', err))
         // cancel reader
         return () => {
             console.log('use effect undo');
@@ -34,7 +34,16 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
         console.log('fetch response came in, calling api to get rsp ');
 
         let resp = await fetch('http://localhost:8080/api/test')
-
+            .then(resp => resp)
+            .catch(err => {
+                console.log('fetch erorr: ', err);
+                return null;
+            });
+        console.log("after fetch", resp)
+        // 处理fetch出错的情况
+        if (resp == null) {
+            return;
+        }
         console.log('get response now  ');
         if (!resp.ok) {
             return;
@@ -56,10 +65,9 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
         } finally {
             reader.releaseLock();
         }
-
     }
 
-    function preventDefault(e: any) {
+    const preventDefault = (e: any) => {
         e.stopPropagation()
         e.preventDefault()
     }

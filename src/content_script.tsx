@@ -9,7 +9,6 @@ console.log('content script loaded');
 let root: Root | null = null
 
 const renderApp = async (event: MouseEvent, text: string) => {
-  console.log('init root')
 
   let $container = await getContainer()
   let $root = $container.shadowRoot?.querySelector(`#${containerRootID}`) as HTMLDivElement | null
@@ -24,7 +23,7 @@ const renderApp = async (event: MouseEvent, text: string) => {
     root = createRoot($root)
     root.render(
       <>
-        <App selectedText={text} initPosition={{ x: event.clientX, y: event.clientY }} clearApp={clearApp} />
+        <App selectedText={text} initPosition={{ x: event.pageX, y: event.pageY }} clearApp={clearApp} />
       </>
     )
   }
