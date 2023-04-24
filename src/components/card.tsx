@@ -1,5 +1,6 @@
 import React from "react"
 import { componentID } from "../consts"
+import { HighlightWords } from "./highlight_words"
 
 interface CardProps {
     state: string
@@ -19,9 +20,9 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
         // cancel reader
         return () => {
             console.log('use effect undo');
-            if (reader != null) {
-                reader.cancel()
+            if (reader != null && !reader.closed) {
                 reader.releaseLock()
+                reader.cancel()
             }
         }
     }, [state])
@@ -111,7 +112,18 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
                     }}
                 ></div>
                 {/* render response */}
+                <HighlightWords state={state} selectedText={selectedText} />
+                {/* divider */}
+                <div
+                    style={{
+                        width: '100%',
+                        height: '1px',
+                        backgroundColor: 'gray',
+                    }}
+                ></div>
+                {/* render response */}
                 <div>{translation}</div>
+
             </div>
         </>
     )
