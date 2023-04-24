@@ -1,6 +1,6 @@
 import React from "react";
-import { containerRootID, zIndex } from "./const";
-import { getContainer } from "./container"
+import { containerRootID, zIndex } from "./consts";
+import { getContainer, removeContainer } from "./container"
 import { createRoot, Root } from 'react-dom/client';
 import { App } from "./components/app";
 
@@ -8,8 +8,7 @@ console.log('content script loaded');
 
 let root: Root | null = null
 
-const initRoot = async () => {
-  console.log('init root')
+const renderApp = async (event: MouseEvent, text: string) => {
 
   let $container = await getContainer()
   let $root = $container.shadowRoot?.querySelector(`#${containerRootID}`) as HTMLDivElement | null
@@ -23,16 +22,40 @@ const initRoot = async () => {
     $container.shadowRoot?.querySelector('div')?.appendChild($root)
     root = createRoot($root)
     root.render(
-      <div>
-        <App />
-      </div>
+      <>
+        <App selectedText={text} initPosition={{ x: event.pageX, y: event.pageY }} clearApp={clearApp} />
+      </>
     )
   }
 }
 
+const clearApp = () => {
+  if (root) {
+    root.unmount()
+    root = null
+  }
 
-async function main() {
-  window.setTimeout(initRoot, 100)
+  removeContainer()
+}
+
+function main() {
+  // 走更简单的玩法，document监听点击事件，如果有选中text，就render app， 然后再监听个mousedown事件，直接销毁app
+  document.addEventListener('mouseup', async (event: MouseEvent) => {
+    window.setTimeout(async () => {
+      let text = (window.getSelection()?.toString() ?? '').trim()
+      if (text == "") {
+        return
+      }
+      renderApp(event, text)
+    })
+  })
+
+  // 这里我有两个做法：1. 每次点击都clearState，管理一个更复杂的生命周期
+  // 2. 每次点击，将整个App unmount，每次点击都创建一次app
+
+  document.addEventListener('mousedown', clearApp);
 }
 
 main()
+
+

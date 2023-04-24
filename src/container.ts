@@ -1,4 +1,4 @@
-import { containerID, zIndex } from "./const"
+import { containerID, zIndex } from "./consts"
 
 function attachEventsToContainer($container: HTMLElement) {
     $container.addEventListener('mousedown', (event) => {
@@ -44,4 +44,9 @@ export async function getContainer(): Promise<HTMLElement> {
     return new Promise((resolve) => {
         resolve($container as HTMLElement)
     })
+}
+
+export async function removeContainer() {
+    const $container = await getContainer()
+    $container.remove()
 }

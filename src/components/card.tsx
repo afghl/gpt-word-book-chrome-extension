@@ -1,21 +1,87 @@
 import React from "react"
-import { componentID } from "../const"
+import { componentID } from "../consts"
+import { HighlightWords } from "./highlight_words"
 
 interface CardProps {
     state: string
     selectedText: string
     position: { x: number, y: number }
+    clearApp: () => void
 }
 
-export const Card = ({ state, selectedText, position }: CardProps) => {
-    // Button需要从父组件（App）里获取到鼠标点击的位置
-    if (state != "SHOWCARD") {
-        return null
+export const Card = ({ state, selectedText, position, clearApp }: CardProps) => {
+    // TODO: 还要补充card本身的一个状态，是否正在获取后端响应
+    const [translation, setTranslation] = React.useState("")
+    let reader: ReadableStreamDefaultReader<Uint8Array> | null
+
+    React.useEffect(() => {
+        console.log('use effect fetching translation');
+        fetchResponse().catch(err => console.log('fetch error: ', err))
+        // cancel reader
+        return () => {
+            console.log('use effect undo');
+            if (reader != null && !reader.closed) {
+                reader.releaseLock()
+                reader.cancel()
+            }
+        }
+    }, [state])
+
+    const fetchResponse = async () => {
+        if (state != "SHOWCARD") {
+            return
+        }
+        setTranslation("")
+        console.log('fetch response came in, calling api to get rsp ');
+
+        // 使用Post 请求后端
+        let resp = await fetch('http://localhost:8080/api/v1/llm/translate', {
+            method: 'POST',
+            body: JSON.stringify({
+                text: selectedText,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(resp => resp).catch(err => {
+            console.log('fetch erorr: ', err);
+            return null;
+        });
+        console.log("after fetch", resp)
+        // 处理fetch出错的情况
+        if (resp == null) {
+            return;
+        }
+        console.log('get response now  ');
+        if (!resp.ok) {
+            return;
+        }
+        if (!resp.body) {
+            return
+        }
+        reader = resp.body.getReader();
+        try {
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+                const str = new TextDecoder().decode(value);
+                setTranslation(prevText => prevText + str);
+            }
+
+        } finally {
+            reader.releaseLock();
+        }
     }
 
-    function preventDefault(e: any) {
+    const preventDefault = (e: any) => {
         e.stopPropagation()
         e.preventDefault()
+    }
+
+    if (state != "SHOWCARD") {
+        return null
     }
 
     return (
@@ -33,7 +99,31 @@ export const Card = ({ state, selectedText, position }: CardProps) => {
                 className="card-view"
                 onClick={preventDefault}
             >
+                <div onClick={clearApp}>
+                    X
+                </div>
                 <div>{selectedText}</div>
+                {/* divider */}
+                <div
+                    style={{
+                        width: '100%',
+                        height: '1px',
+                        backgroundColor: 'gray',
+                    }}
+                ></div>
+                {/* render response */}
+                <HighlightWords state={state} selectedText={selectedText} />
+                {/* divider */}
+                <div
+                    style={{
+                        width: '100%',
+                        height: '1px',
+                        backgroundColor: 'gray',
+                    }}
+                ></div>
+                {/* render response */}
+                <div>{translation}</div>
+
             </div>
         </>
     )
