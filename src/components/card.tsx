@@ -1,6 +1,7 @@
 import React from "react"
 import { componentID } from "../consts"
 import { HighlightWords } from "./highlight_words"
+import { createUseStyles } from 'react-jss'
 
 interface CardProps {
     state: string
@@ -9,9 +10,33 @@ interface CardProps {
     clearApp: () => void
 }
 
+const useStyles = createUseStyles({
+    card_view: {
+        'min-width': '660px',
+        'max-width': '660px',
+        height: '500px',
+        backgroundColor: 'aliceblue',
+        position: 'absolute',
+        display: 'block',
+        'border-radius': '4px',
+        padding: '5px',
+    },
+    selected_text_wrapper: {
+        'min-height': '80px',
+        'padding-left': '10px',
+        'padding-right': '10px',
+        '& textarea': {
+            width: '100%',
+            hight: '80px',
+        }
+    }
+})
+
+
 export const Card = ({ state, selectedText, position, clearApp }: CardProps) => {
     // TODO: 还要补充card本身的一个状态，是否正在获取后端响应
     const [translation, setTranslation] = React.useState("")
+    const classes = useStyles()
     let reader: ReadableStreamDefaultReader<Uint8Array> | null
 
     React.useEffect(() => {
@@ -88,39 +113,20 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
         <>
             <div
                 id={componentID("card")}
-                style={{
-                    width: '300px',
-                    height: '300px',
-                    backgroundColor: 'aliceblue',
-                    position: 'absolute',
-                    left: position.x + 'px',
-                    top: position.y + 'px',
-                }}
-                className="card-view"
+                style={{ left: position.x + 'px', top: position.y + 'px', }}
+                className={classes.card_view}
                 onClick={preventDefault}
             >
                 <div onClick={clearApp}>
                     X
                 </div>
-                <div>{selectedText}</div>
-                {/* divider */}
                 <div
-                    style={{
-                        width: '100%',
-                        height: '1px',
-                        backgroundColor: 'gray',
-                    }}
-                ></div>
-                {/* render response */}
+                    className={classes.selected_text_wrapper}>
+                    <textarea value={selectedText} readOnly={true} />
+                </div>
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
                 <HighlightWords state={state} selectedText={selectedText} />
-                {/* divider */}
-                <div
-                    style={{
-                        width: '100%',
-                        height: '1px',
-                        backgroundColor: 'gray',
-                    }}
-                ></div>
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
                 {/* render response */}
                 <div>{translation}</div>
 

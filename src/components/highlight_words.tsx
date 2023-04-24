@@ -1,5 +1,6 @@
 
 import React from "react"
+import { createUseStyles } from "react-jss"
 
 interface HighlightWordsProps {
     state: string
@@ -13,7 +14,7 @@ interface HighlightWords {
 
 export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => {
     const [words, setWords] = React.useState<HighlightWords[]>([])
-
+    const classes = useStyles()
     let reader: ReadableStreamDefaultReader<Uint8Array> | null
 
     React.useEffect(() => {
@@ -72,13 +73,24 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
 
     return (
         <>
-            {/* 遍历words，渲染 item  */}
-            {words.map((item, index) => (
-                <div key={index}>
-                    <span>{item.word}</span>
-                    <span>{item.translation}</span>
-                </div>
-            ))}
+            <div className={classes.highlight_words} >
+                {/* 遍历words，渲染 item  */}
+                {words.map((item, index) => (
+                    <div key={index} className={classes.highlight_words_item}>
+                        <span>{item.word}</span>
+                        <span>{item.translation}</span>
+                    </div>
+                ))}
+            </div>
         </>
     )
 }
+
+const useStyles = createUseStyles({
+    highlight_words: {
+        padding: '10px',
+    },
+    highlight_words_item: {
+        border: '1px solid black',
+    }
+})
