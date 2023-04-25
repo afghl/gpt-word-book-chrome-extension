@@ -2,6 +2,7 @@ import React from "react"
 import { componentID } from "../consts"
 import { HighlightWords } from "./highlight_words"
 import { createUseStyles } from 'react-jss'
+import { CardTitle } from "./card_title"
 
 interface CardProps {
     state: string
@@ -14,21 +15,39 @@ const useStyles = createUseStyles({
     card_view: {
         'min-width': '660px',
         'max-width': '660px',
-        height: '500px',
-        backgroundColor: 'aliceblue',
+        height: 'auto',
+        backgroundColor: 'white',
         position: 'absolute',
         display: 'block',
         'border-radius': '4px',
         padding: '5px',
+        'box-shadow': '0 0 8px rgba(0,0,0,.3)',
+        borderRadius: '4px',
+        font: '14px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
+        zIndex: '2147483647',
+        opacity: '100',
     },
     selected_text_wrapper: {
         'min-height': '80px',
         'padding-left': '10px',
         'padding-right': '10px',
+        'padding-bottom': '15px',
+        'padding-top': '10px',
+        display: 'flex',
         '& textarea': {
-            width: '100%',
+            width: '95%',
             hight: '80px',
+            borderRadius: '0',
+            padding: '4px 8px',
+            'margin-left': 'auto',
+            'margin-right': 'auto',
+            'font': 'inherit',
+            border: 0,
+            'background-color': 'rgba(238, 238, 238)',
         }
+    },
+    translation_wrap: {
+        padding: '5px',
     }
 })
 
@@ -117,9 +136,11 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
                 className={classes.card_view}
                 onClick={preventDefault}
             >
+                <CardTitle />
                 <div onClick={clearApp}>
                     X
                 </div>
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
                 <div
                     className={classes.selected_text_wrapper}>
                     <textarea value={selectedText} readOnly={true} />
@@ -128,7 +149,7 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
                 <HighlightWords state={state} selectedText={selectedText} />
                 <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
                 {/* render response */}
-                <div>{translation}</div>
+                <div className={classes.translation_wrap}>{translation}</div>
 
             </div>
         </>

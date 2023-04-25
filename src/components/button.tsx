@@ -22,8 +22,8 @@ export const Button = ({ state, handleButtonClick, position }: ButtonProps) => {
                     height: '60px',
                     backgroundColor: 'red',
                     position: 'absolute',
-                    left: position.x + 'px',
-                    top: position.y + 'px',
+                    left: position.x + 10 + 'px',
+                    top: position.y + 10 + 'px',
                 }}
                 className="button-view"
                 onClick={handleButtonClick}

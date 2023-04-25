@@ -73,24 +73,43 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
 
     return (
         <>
-            <div className={classes.highlight_words} >
-                {/* 遍历words，渲染 item  */}
-                {words.map((item, index) => (
-                    <div key={index} className={classes.highlight_words_item}>
-                        <span>{item.word}</span>
-                        <span>{item.translation}</span>
-                    </div>
-                ))}
+            <div className={classes.highlight_words_wrap} >
+                <div className={classes.highlight_words} >
+                    {/* 遍历words，渲染 item  */}
+                    {words.map((item, index) => (
+                        <div key={index} className={classes.highlight_words_item}>
+                            <span className={classes.word}>{item.word}</span>
+                            <span className={classes.word_translation}>{item.translation}</span>
+                        </div>
+                    ))}
+                </div>
             </div>
         </>
     )
 }
 
 const useStyles = createUseStyles({
+    highlight_words_wrap: {
+        paddingTop: '10px',
+        paddingBottom: '10px',
+    },
     highlight_words: {
         padding: '10px',
+        display: 'flex',
+        'flex-wrap': 'wrap',
     },
     highlight_words_item: {
-        border: '1px solid black',
+        border: '1px solid rgb(219, 237, 219, 0.5)',
+        background: 'rgb(219, 237, 219)',
+        margin: '5px',
+        paddingLeft: '2px',
+        paddingRight: '2px',
+    },
+    word: {
+        fontSize: '14px',
+    },
+    word_translation: {
+        fontSize: "12px",
+        color: "gray",
     }
 })
