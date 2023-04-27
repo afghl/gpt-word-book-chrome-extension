@@ -13,7 +13,6 @@ let root: Root | null = null
 const generateId = createGenerateId()
 
 const renderApp = async (event: MouseEvent, text: string) => {
-
   let $container = await getContainer()
   let $root = $container.shadowRoot?.querySelector(`#${containerRootID}`) as HTMLDivElement | null
   // 第一次来，创建一个react app
@@ -33,7 +32,7 @@ const renderApp = async (event: MouseEvent, text: string) => {
     root = createRoot($root)
     root.render(
       <>
-        <JssProvider jss={jss} generateId={generateId} classNamePrefix='__yetone-openai-translator-jss-'>
+        <JssProvider jss={jss} generateId={generateId} classNamePrefix='__gpt-word-book-jss-'>
           <App selectedText={text} initPosition={{ x: event.pageX, y: event.pageY }} clearApp={clearApp} />
         </JssProvider>
 

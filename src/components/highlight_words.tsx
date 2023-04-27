@@ -18,7 +18,6 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
     let reader: ReadableStreamDefaultReader<Uint8Array> | null
 
     React.useEffect(() => {
-        console.log('use effect fetching translation');
         fetchHighlights().catch(err => console.log('fetch error: ', err))
         // cancel reader
         return () => {
@@ -31,7 +30,6 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
     }, [state])
 
     const fetchHighlights = async () => {
-        console.log('fetch response came in, calling api to get rsp ');
         // 使用Post 请求后端
         let resp = await fetch('http://localhost:8080/api/v1/llm/find_highlights', {
             method: 'POST',
@@ -70,6 +68,10 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
         setWords(json)
     }
 
+    const getRandomWordColor = (classes: any) => {
+        let index = Math.floor(Math.random() * wordColors.length)
+        return classes[wordColors[index]]
+    }
 
     return (
         <>
@@ -77,9 +79,10 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
                 <div className={classes.highlight_words} >
                     {/* 遍历words，渲染 item  */}
                     {words.map((item, index) => (
-                        <div key={index} className={classes.highlight_words_item}>
-                            <span className={classes.word}>{item.word}</span>
-                            <span className={classes.word_translation}>{item.translation}</span>
+                        <div key={index} className={classes.highlight_words_item + " " + getRandomWordColor(classes)}>
+                            {/* 这里要有两个className */}
+                            <span className={classes.word}>{item.word} </span>
+                            <span className={classes.word_translation}>[{item.translation}]</span>
                         </div>
                     ))}
                 </div>
@@ -88,28 +91,39 @@ export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => 
     )
 }
 
+const wordColors = ["word_green", "word_yellow", "word_blue", "word_purple", "word_red", "word_orange"]
+
+// 这里createUseStyles需要使用wordColors
+
 const useStyles = createUseStyles({
     highlight_words_wrap: {
-        paddingTop: '10px',
-        paddingBottom: '10px',
+        padding: '10px',
     },
     highlight_words: {
-        padding: '10px',
+        padding: '0 5px',
         display: 'flex',
         'flex-wrap': 'wrap',
     },
     highlight_words_item: {
         border: '1px solid rgb(219, 237, 219, 0.5)',
-        background: 'rgb(219, 237, 219)',
-        margin: '5px',
+        margin: '2px',
         paddingLeft: '2px',
         paddingRight: '2px',
+        borderRadius: '4px',
+        cursor: 'pointer'
     },
     word: {
         fontSize: '14px',
     },
     word_translation: {
-        fontSize: "12px",
-        color: "gray",
-    }
+        fontSize: "13px",
+        color: "rgba(0, 0, 0, 0.6);",
+    },
+    'word_green': { 'backgroundColor': 'rgb(219, 237, 219)' },
+    'word_yellow': { 'backgroundColor': 'rgb(255, 255, 204)' },
+    'word_red': { 'backgroundColor': 'rgb(255, 204, 204)' },
+    'word_blue': { 'backgroundColor': 'rgb(204, 229, 255)' },
+    'word_purple': { 'backgroundColor': 'rgb(229, 204, 255)' },
+    'word_orange': { 'backgroundColor': 'rgb(255, 229, 204)' },
+    'word_gray': { 'backgroundColor': 'rgb(204, 204, 204)' },
 })

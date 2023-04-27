@@ -19,13 +19,13 @@ const useStyles = createUseStyles({
         backgroundColor: 'white',
         position: 'absolute',
         display: 'block',
-        'border-radius': '4px',
-        padding: '5px',
+        'border-radius': '5px',
         'box-shadow': '0 0 8px rgba(0,0,0,.3)',
         borderRadius: '4px',
         font: '14px/1.6 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji',
         zIndex: '2147483647',
         opacity: '100',
+        'padding-bottom': '30px',
     },
     selected_text_wrapper: {
         'min-height': '80px',
@@ -36,18 +36,20 @@ const useStyles = createUseStyles({
         display: 'flex',
         '& textarea': {
             width: '95%',
-            hight: '80px',
+            hight: '120px',
             borderRadius: '0',
             padding: '4px 8px',
             'margin-left': 'auto',
             'margin-right': 'auto',
             'font': 'inherit',
             border: 0,
+            'font-size': '12px',
             'background-color': 'rgba(238, 238, 238)',
         }
     },
     translation_wrap: {
-        padding: '5px',
+        padding: '10px',
+        minHeight: '40px'
     }
 })
 
@@ -136,18 +138,16 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
                 className={classes.card_view}
                 onClick={preventDefault}
             >
-                <CardTitle />
-                <div onClick={clearApp}>
-                    X
-                </div>
-                <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
+                <CardTitle onClickClose={clearApp} />
+
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)' }}></div>
                 <div
                     className={classes.selected_text_wrapper}>
                     <textarea value={selectedText} readOnly={true} />
                 </div>
-                <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)' }}></div>
                 <HighlightWords state={state} selectedText={selectedText} />
-                <div style={{ width: '100%', height: '1px', backgroundColor: 'gray' }}></div>
+                <div style={{ width: '100%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)' }}></div>
                 {/* render response */}
                 <div className={classes.translation_wrap}>{translation}</div>
 

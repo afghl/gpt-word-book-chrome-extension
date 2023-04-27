@@ -13,7 +13,7 @@ export const App = ({ selectedText, initPosition, clearApp }: AppProps) => {
     const [lastEventPosition, setLastEventPosition] = React.useState(initPosition)
 
     const updatePosition = (event: MouseEvent) => {
-        setLastEventPosition({ x: event.clientX, y: event.clientY })
+        setLastEventPosition({ x: event.pageX, y: event.pageY })
     }
 
     const handleButtonClick = (event: MouseEvent) => {
