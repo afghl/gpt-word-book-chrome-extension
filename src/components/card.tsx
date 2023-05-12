@@ -11,6 +11,11 @@ interface CardProps {
     clearApp: () => void
 }
 
+export interface HighlightWords {
+    word: string
+    translation: string
+}
+
 const useStyles = createUseStyles({
     card_view: {
         'min-width': '660px',
@@ -49,7 +54,8 @@ const useStyles = createUseStyles({
     },
     translation_wrap: {
         padding: '10px',
-        minHeight: '40px'
+        minHeight: '40px',
+        'white-space': 'pre-wrap',
     }
 })
 
@@ -57,12 +63,14 @@ const useStyles = createUseStyles({
 export const Card = ({ state, selectedText, position, clearApp }: CardProps) => {
     // TODO: 还要补充card本身的一个状态，是否正在获取后端响应
     const [translation, setTranslation] = React.useState("")
+    const [words, setWords] = React.useState<HighlightWords[]>([])
     const classes = useStyles()
     let reader: ReadableStreamDefaultReader<Uint8Array> | null
 
     React.useEffect(() => {
         console.log('use effect fetching translation');
         fetchResponse().catch(err => console.log('fetch error: ', err))
+        fetchHighlights().catch(err => console.log('fetch highlight words error: ', err))
         // cancel reader
         return () => {
             console.log('use effect undo');
@@ -72,6 +80,44 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
             }
         }
     }, [state])
+
+    const fetchHighlights = async () => {
+        // 使用Post 请求后端
+        let resp = await fetch('http://localhost:8080/api/v1/llm/find_highlights', {
+            method: 'POST',
+            body: JSON.stringify({
+                text: selectedText,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(resp => resp).catch(err => {
+            console.log('find highlights fetch erorr: ', err);
+            return null;
+        });
+        // 处理fetch出错的情况
+        if (resp == null) {
+            return;
+        }
+        if (!resp.ok) {
+            return;
+        }
+        if (!resp.body) {
+            return
+        }
+        // 用json解析resp.body
+        let json = await resp.json().catch(err => {
+            console.log('find highlights fetch erorr: ', err);
+            return null;
+        });
+        // 处理json解析出错的情况
+        if (json == null) {
+            return;
+        }
+        console.log("find highlights json", json)
+        // 用json的值更新words
+        setWords(json)
+    }
 
     const fetchResponse = async () => {
         if (state != "SHOWCARD") {
@@ -146,7 +192,7 @@ export const Card = ({ state, selectedText, position, clearApp }: CardProps) => 
                     <textarea value={selectedText} readOnly={true} />
                 </div>
                 <div style={{ width: '100%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)' }}></div>
-                <HighlightWords state={state} selectedText={selectedText} />
+                <HighlightWords state={state} selectedText={selectedText} words={words} />
                 <div style={{ width: '100%', height: '1px', backgroundColor: 'rgba(0, 0, 0, 0.08)' }}></div>
                 {/* render response */}
                 <div className={classes.translation_wrap}>{translation}</div>

@@ -2,70 +2,43 @@
 import React from "react"
 import { createUseStyles } from "react-jss"
 
+
 interface HighlightWordsProps {
     state: string
     selectedText: string
+    words: any[]
 }
 
-interface HighlightWords {
-    word: string
-    translation: string
-}
-
-export const HighlightWords = ({ state, selectedText }: HighlightWordsProps) => {
-    const [words, setWords] = React.useState<HighlightWords[]>([])
+export const HighlightWords = ({ state, selectedText, words }: HighlightWordsProps) => {
     const classes = useStyles()
-    let reader: ReadableStreamDefaultReader<Uint8Array> | null
+    // let reader: ReadableStreamDefaultReader<Uint8Array> | null
 
     React.useEffect(() => {
-        fetchHighlights().catch(err => console.log('fetch error: ', err))
-        // cancel reader
         return () => {
-            console.log('use effect undo');
-            if (reader != null && !reader.closed) {
-                reader.releaseLock()
-                reader.cancel()
-            }
+            saveWords()
         }
-    }, [state])
+    }, [words])
 
-    const fetchHighlights = async () => {
-        // 使用Post 请求后端
-        let resp = await fetch('http://localhost:8080/api/v1/llm/find_highlights', {
+    const saveWords = async () => {
+        // 这里获取state里的words, 为什么是空的呢？
+        // 原因是：这里的words是在fetchHighlights里面更新的，而fetchHighlights是在useEffect里面调用的
+        console.log("going into save words, words: ", words)
+        if (words.length == 0) {
+            return
+        }
+        let resp = await fetch('http://localhost:8080/api/v1/wordbook/words', {
             method: 'POST',
             body: JSON.stringify({
                 text: selectedText,
+                words: words,
             }),
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(resp => resp).catch(err => {
-            console.log('find highlights fetch erorr: ', err);
+            console.log('fetch erorr: ', err);
             return null;
-        });
-        console.log("find highlights  after fetch", resp)
-        // 处理fetch出错的情况
-        if (resp == null) {
-            return;
-        }
-        if (!resp.ok) {
-            return;
-        }
-        if (!resp.body) {
-            return
-        }
-        // 用json解析resp.body
-        let json = await resp.json().catch(err => {
-            console.log('find highlights fetch erorr: ', err);
-            return null;
-        });
-        // 处理json解析出错的情况
-        if (json == null) {
-            return;
-        }
-        console.log("find highlights json", json)
-        // 用json的值更新words
-        setWords(json)
+        })
     }
 
     const getRandomWordColor = (classes: any) => {
