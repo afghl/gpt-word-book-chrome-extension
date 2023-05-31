@@ -1,5 +1,7 @@
 import React from "react"
 import { componentID } from "../consts"
+import { createUseStyles } from "react-jss"
+import my_icon from './icon.png'
 
 interface ButtonProps {
     state: string
@@ -12,22 +14,32 @@ export const Button = ({ state, handleButtonClick, position }: ButtonProps) => {
     if (state != "SHOWBUTTON") {
         return null
     }
+    console.log("Button render, icon", my_icon);
 
     return (
         <>
             <div
                 id={componentID("btn")}
                 style={{
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: 'red',
+                    width: '27px',
+                    height: '27px',
                     position: 'absolute',
-                    left: position.x + 'px',
-                    top: position.y + 'px',
+                    left: position.x + 30 + 'px',
+                    top: position.y + 30 + 'px',
+                    borderRadius: '4px',
+                    boxShadow: 'rgba(0, 0, 0, 0.5) 1px 1px 3px',
+                    display: 'flex'
                 }}
                 className="button-view"
                 onClick={handleButtonClick}
-            />
+            >
+                <img src={my_icon} style={{
+                    width: '27px',
+                    height: '27px',
+                    'borderRadius': '4px',
+                }}></img>
+            </div>
+
         </>
     )
 }

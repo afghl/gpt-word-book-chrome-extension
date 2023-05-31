@@ -2,14 +2,17 @@ import React from "react";
 import { containerRootID, zIndex } from "./consts";
 import { getContainer, removeContainer } from "./container"
 import { createRoot, Root } from 'react-dom/client';
+import preset from 'jss-preset-default';
+import { JssProvider, createGenerateId } from 'react-jss';
+import { create } from 'jss'
 import { App } from "./components/app";
 
 console.log('content script loaded');
 
 let root: Root | null = null
+const generateId = createGenerateId()
 
 const renderApp = async (event: MouseEvent, text: string) => {
-
   let $container = await getContainer()
   let $root = $container.shadowRoot?.querySelector(`#${containerRootID}`) as HTMLDivElement | null
   // 第一次来，创建一个react app
@@ -20,10 +23,19 @@ const renderApp = async (event: MouseEvent, text: string) => {
     $root.style.zIndex = zIndex
 
     $container.shadowRoot?.querySelector('div')?.appendChild($root)
+
+    const jss = create().setup({
+      ...preset(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      insertionPoint: $root.parentElement as any,
+    })
     root = createRoot($root)
     root.render(
       <>
-        <App selectedText={text} initPosition={{ x: event.pageX, y: event.pageY }} clearApp={clearApp} />
+        <JssProvider jss={jss} generateId={generateId} classNamePrefix='__gpt-word-book-jss-'>
+          <App selectedText={text} initPosition={{ x: event.pageX, y: event.pageY }} clearApp={clearApp} />
+        </JssProvider>
+
       </>
     )
   }
