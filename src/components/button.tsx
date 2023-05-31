@@ -26,8 +26,9 @@ export const Button = ({ state, handleButtonClick, position }: ButtonProps) => {
                     position: 'absolute',
                     left: position.x + 30 + 'px',
                     top: position.y + 30 + 'px',
-                    borderRadius: '3px',
-                    boxShadow: 'rgba(0, 0, 0, 0.2) 0px 0px 4px',
+                    borderRadius: '4px',
+                    boxShadow: 'rgba(0, 0, 0, 0.5) 1px 1px 3px',
+                    display: 'flex'
                 }}
                 className="button-view"
                 onClick={handleButtonClick}
@@ -35,6 +36,7 @@ export const Button = ({ state, handleButtonClick, position }: ButtonProps) => {
                 <img src={my_icon} style={{
                     width: '27px',
                     height: '27px',
+                    'borderRadius': '4px',
                 }}></img>
             </div>
 
